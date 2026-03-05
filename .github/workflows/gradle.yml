@@ -12,44 +12,28 @@ concurrency:
 
 jobs:
   tests:
-    if: github.repository == 'mockk/mockk'
     runs-on: ubuntu-latest
-        if: github.repository == 'mockk/mockk'
     strategy:
-        if: github.repository == 'mockk/mockk'
       matrix:
-            if: github.repository == 'mockk/mockk'
         java-version: [ 17, 21, 25 ] # test LTS versions and maybe latest feature release
-                if: github.repository == 'mockk/mockk'
         kotlin-version: [ 1.5.32, 1.7.22, 1.9.25, 2.0.21, 2.2.21, 2.3.0 ]
-                if: github.repository == 'mockk/mockk'
       fail-fast: false # in case one JDK fails, we still want to see results from others
-            if: github.repository == 'mockk/mockk'
     name: "Check [java=${{ matrix.java-version }}, kotlin=${{ matrix.kotlin-version }}]"
-        if: github.repository == 'mockk/mockk'
     timeout-minutes: 30
-        if: github.repository == 'mockk/mockk'
     steps:
-        if: github.repository == 'mockk/mockk'
       - uses: actions/checkout@v6
 
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v5
-                if: github.repository == 'mockk/mockk'
         with:
-                if: github.repository == 'mockk/mockk'
           distribution: 'temurin'
-                    if: github.repository == 'mockk/mockk'
           java-version: ${{ matrix.java-version }}
-                    if: github.repository == 'mockk/mockk'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-                if: github.repository == 'mockk/mockk'
 
       - name: Run tests with Gradle
         run: >
-                if: github.repository == 'mockk/mockk'
           ./gradlew check
           --stacktrace
           -Pio_mockk_kotlin_version=${{ matrix.kotlin-version }}
@@ -58,58 +42,38 @@ jobs:
       - name: Junit Test Report
         uses: mikepenz/action-junit-report@v6
         if: success() || failure() # always run even if the previous step fails
-                if: github.repository == 'mockk/mockk'
         with:
-                if: github.repository == 'mockk/mockk'
           check_name: "Check JUnit Report [java=${{ matrix.java-version }}, kotlin=${{ matrix.kotlin-version }}]"
-                    if: github.repository == 'mockk/mockk'
           report_paths: '**/build/test-results/**/TEST-*.xml'
-                    if: github.repository == 'mockk/mockk'
 
   android-instrumented-tests:
-    if: github.repository == 'mockk/mockk'
     runs-on: ubuntu-latest
-        if: github.repository == 'mockk/mockk'
     strategy:
-        if: github.repository == 'mockk/mockk'
       matrix:
-            if: github.repository == 'mockk/mockk'
         api-level: [ 21, 26, 28, 34, 36 ] # Relevant SDK versions to test for MockK Android projects
-                if: github.repository == 'mockk/mockk'
       fail-fast: false # in case one API-level fails, we still want to see results from others
-            if: github.repository == 'mockk/mockk'
     name: "ConnectedCheck [api=${{ matrix.api-level }}]"
-        if: github.repository == 'mockk/mockk'
     timeout-minutes: 30
-        if: github.repository == 'mockk/mockk'
     steps:
-        if: github.repository == 'mockk/mockk'
       - name: checkout
         uses: actions/checkout@v6
-                if: github.repository == 'mockk/mockk'
 
       - name: Enable KVM
         run: |
-                if: github.repository == 'mockk/mockk'
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
       - uses: actions/setup-java@v5
         with:
-                if: github.repository == 'mockk/mockk'
           distribution: 'temurin'
-                    if: github.repository == 'mockk/mockk'
           java-version: '17'
-                    if: github.repository == 'mockk/mockk'
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v5
-                if: github.repository == 'mockk/mockk'
 
       - name: Set target and architecture based on API level
         run: |
-                if: github.repository == 'mockk/mockk'
           if [ ${{ matrix.api-level }} -le 29 ]; then
             echo "TARGET=default" >> $GITHUB_ENV
           else
@@ -147,31 +111,18 @@ jobs:
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
-                if: github.repository == 'mockk/mockk'
         with:
-                if: github.repository == 'mockk/mockk'
           api-level: ${{ matrix.api-level }}
-                    if: github.repository == 'mockk/mockk'
           target: ${{ env.TARGET }}
-                    if: github.repository == 'mockk/mockk'
           arch: ${{ env.ARCH }}
-                    if: github.repository == 'mockk/mockk'
           force-avd-creation: false
-                    if: github.repository == 'mockk/mockk'
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-                    if: github.repository == 'mockk/mockk'
           disable-animations: true
-                    if: github.repository == 'mockk/mockk'
           script: ./gradlew connectedCheck
-                    if: github.repository == 'mockk/mockk'
 
       - name: Junit Test Report
         uses: mikepenz/action-junit-report@v6
         if: success() || failure() # always run even if the previous step fails
-                if: github.repository == 'mockk/mockk'
         with:
-                if: github.repository == 'mockk/mockk'
           check_name: "ConnectedCheck JUnit Report [api=${{ matrix.api-level }}]"
-                    if: github.repository == 'mockk/mockk'
           report_paths: "**/build/outputs/androidTest-results/**/TEST-*.xml"
-                    if: github.repository == 'mockk/mockk'
