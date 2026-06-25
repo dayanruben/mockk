@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.4.20-Beta1"
+kotlin = "2.4.10-RC"
 coroutines = "1.10.2"
 
 android-gradle = "8.13.2"
