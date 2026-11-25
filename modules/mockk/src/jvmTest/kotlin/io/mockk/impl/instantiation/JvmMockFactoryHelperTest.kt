@@ -120,20 +120,20 @@ class JvmMockFactoryHelperTest {
         try {
             every { mock.noArg() } just Runs
             repeat(100) { mock.noArg() }
+
+            val method = SomeClass::class.java.getDeclaredMethod("noArg")
+
+            assertTrue(
+                descriptionCache.containsKey(method),
+                "the invoked method must be present in the description cache",
+            )
+            assertTrue(
+                inlineCache.containsKey(method),
+                "the invoked method must be present in the inline cache",
+            )
         } finally {
             unmockkAll()
         }
-
-        val method = SomeClass::class.java.getDeclaredMethod("noArg")
-
-        assertTrue(
-            descriptionCache.containsKey(method),
-            "the invoked method must be present in the description cache",
-        )
-        assertTrue(
-            inlineCache.containsKey(method),
-            "the invoked method must be present in the inline cache",
-        )
     }
 }
 
